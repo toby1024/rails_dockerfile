@@ -22,9 +22,7 @@ RUN mkdir -p $APP_HOME && \
     apt-get update && \
     apt-get install -y apt-transport-https ca-certificates && \
     # 加上passenger的APT repository
-    sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger jessie main >  \
-           /etc/apt/sources.list.d/passenger.list' && \
-
+    sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger jessie main > /etc/apt/sources.list.d/passenger.list' && \
     #安装nodejs
     apt-get install -y nodejs --no-install-recommends && \
     #安装mysql-client postgresql-client sqlite3
@@ -70,6 +68,6 @@ RUN mkdir -p $APP_HOME && \
     echo "export TERM=xterm" >> ~/.bashrc && \
     echo "export LANG=zh_CN.UTF-8" >> ${HOME}/.bashrc && \
     echo "export LANGUAGE=zh_CN.UTF-8" >> ${HOME}/.bashrc && \
-    echo "export LC_ALL=zh_CN.UTF-8" >> ${HOME}/.bashrc && \
+    echo "export LC_ALL=zh_CN.UTF-8" >> ${HOME}/.bashrc
 # set work dir
 WORKDIR $APP_HOME
