@@ -15,34 +15,32 @@ RUN mkdir -p $APP_HOME && \
     dpkg-reconfigure -f noninteractive tzdata && \
     #换成163源
     # curl http://mirrors.163.com/.help/sources.list.jessie -o /etc/apt/sources.list && \
-    #开启ll快捷命令代替ls -l
-    echo "alias ll='ls \$LS_OPTIONS -l'" >> ~/.bashrc && \
     # Install our PGP key and add HTTPS support for APT
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7 && \
     apt-get update && \
     apt-get install -y apt-transport-https ca-certificates && \
     # 加上passenger的APT repository
     sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger jessie main > /etc/apt/sources.list.d/passenger.list' && \
-    #安装nodejs
+    #install passenger
+    apt-get install -y passenger libapache2-mod-passenger && \
+    #install nodejs
     apt-get install -y nodejs --no-install-recommends && \
-    #安装mysql-client postgresql-client sqlite3
-    apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && \
-    #安装passenger
-    apt-get install -y passenger && \
+    #install mysql-client or postgresql-client sqlite3
+    apt-get install -y mysql-client --no-install-recommends 
     #安装中文字符集zh_CN.UTF-8支持
-    apt-get -y install locales && \
+ RUN apt-get -y install locales && \
     sed -i -e 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen && \
     echo 'LANG="zh_CN.UTF-8"' > /etc/default/locale && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=zh_CN.UTF-8 && \
     #安装net-tools Telnet
-    apt-get -y install telnet net-tools && \
+    #apt-get -y install telnet net-tools && \
     #安装logrotate rsyslog 日志服务
-    apt-get -y install logrotate rsyslog && \
+    apt-get -y install logrotate rsyslog 
     #安装sendemail服务
-    apt-get -y install sendemail && \
+    #apt-get -y install sendemail && \
     # 安装sshd服务
-    apt-get -y install openssh-server pwgen vim cron && \
+ RUN apt-get -y install openssh-server pwgen vim cron && \
     mkdir -p /var/run/sshd && \
     mkdir -p /var/log/supervisor && \
     sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
@@ -56,7 +54,9 @@ RUN mkdir -p $APP_HOME && \
     sed  -i '/^\/usr\/sbin\/logrotate/d' /etc/cron.daily/logrotate && \
     echo "/usr/sbin/logrotate -f /etc/logrotate.conf" >> /etc/cron.daily/logrotate && \
     #把cron日志打开
-    sed -i 's/#cron\.\*/cron.*/g' /etc/rsyslog.conf && \
+    sed -i 's/#cron\.\*/cron.*/g' /etc/rsyslog.conf
+    #开启ll快捷命令代替ls -l
+ RUN echo "alias ll='ls \$LS_OPTIONS -l'" >> ~/.bashrc && \
     # set ssh user source,为通过ssh进来的shell导出必要的环境变量
     echo "export APP_HOME=${APP_HOME}" >> ${HOME}/.bashrc && \
     echo "export GEM_HOME=${GEM_HOME}" >> ${HOME}/.bashrc && \
