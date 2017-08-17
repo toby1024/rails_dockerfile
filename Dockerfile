@@ -68,5 +68,21 @@ RUN mkdir -p $APP_HOME && \
     echo "export LANG=zh_CN.UTF-8" >> ${HOME}/.bashrc && \
     echo "export LANGUAGE=zh_CN.UTF-8" >> ${HOME}/.bashrc && \
     echo "export LC_ALL=zh_CN.UTF-8" >> ${HOME}/.bashrc 
-
 WORKDIR $APP_HOME
+
+ONBUILD ADD Gemfile* $APP_HOME/
+ONBUILD ADD . $APP_HOME
+ONBUILD RUN bundle install && \
+        chmod 755 $APP_HOME/*.sh && \
+        chmod -R 755 $APP_HOME/bin && \
+        #配置logrotate,用来切分log
+        echo "$APP_HOME/log/*.log { \n \
+            daily \n \
+            dateext \n \
+            notifempty \n \
+            missingok \n \
+            rotate 15 \n \
+            compress \n \
+        nodelaycompress \n \
+            copytruncate \n \
+        }"  >> /etc/logrotate.d/rails
