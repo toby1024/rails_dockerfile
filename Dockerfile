@@ -16,7 +16,7 @@ RUN mkdir -p $APP_HOME && \
 RUN apt-get update && \
     apt-get install -y apt-transport-https ca-certificates && \
     # 加上passenger的APT repository
-    sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger jessie main > /etc/apt/sources.list.d/passenger.list' && \
+    sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main > /etc/apt/sources.list.d/passenger.list' && \
     #install passenger
     apt-get install -y passenger && \
     #install nodejs
