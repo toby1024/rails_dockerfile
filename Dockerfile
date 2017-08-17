@@ -14,16 +14,14 @@ RUN mkdir -p $APP_HOME && \
     #换成163源
     # curl http://mirrors.163.com/.help/sources.list.jessie -o /etc/apt/sources.list && \
     #开启ll快捷命令代替ls -l
-    echo "alias ll='ls \$LS_OPTIONS -l'" >> ~/.bashrc
-
-# Install our PGP key and add HTTPS support for APT
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
-RUN apt-get update && apt-get install -y apt-transport-https ca-certificates
-# 加上passenger的APT repository
-RUN sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger jessie main >  \
-           /etc/apt/sources.list.d/passenger.list'
-
-RUN apt-get update && \
+    echo "alias ll='ls \$LS_OPTIONS -l'" >> ~/.bashrc && \
+    # Install our PGP key and add HTTPS support for APT
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7 && \
+    apt-get update && apt-get install -y apt-transport-https ca-certificates && \
+    # 加上passenger的APT repository
+    sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger jessie main >  \
+           /etc/apt/sources.list.d/passenger.list' && \
+    apt-get update && \
     #安装nodejs
     apt-get install -y nodejs --no-install-recommends && \
     #安装mysql-client or postgresql-client or sqlite3
@@ -57,12 +55,9 @@ RUN apt-get update && \
     sed  -i '/^\/usr\/sbin\/logrotate/d' /etc/cron.daily/logrotate && \
     echo "/usr/sbin/logrotate -f /etc/logrotate.conf" >> /etc/cron.daily/logrotate && \
     #把cron日志打开
-    sed -i 's/#cron\.\*/cron.*/g' /etc/rsyslog.conf
-
-WORKDIR $APP_HOME
-
-# set ssh user source,为通过ssh进来的shell导出必要的环境变量
-RUN echo "export APP_HOME=${APP_HOME}" >> ${HOME}/.bashrc && \
+    sed -i 's/#cron\.\*/cron.*/g' /etc/rsyslog.conf && \
+    # set ssh user source,为通过ssh进来的shell导出必要的环境变量
+    echo "export APP_HOME=${APP_HOME}" >> ${HOME}/.bashrc && \
     echo "export GEM_HOME=${GEM_HOME}" >> ${HOME}/.bashrc && \
     echo "export BUNDLE_PATH=${BUNDLE_PATH}" >> ${HOME}/.bashrc && \
     echo "export BUNDLE_BIN=${BUNDLE_BIN}" >> ${HOME}/.bashrc && \
@@ -74,3 +69,4 @@ RUN echo "export APP_HOME=${APP_HOME}" >> ${HOME}/.bashrc && \
     echo "export LANGUAGE=zh_CN.UTF-8" >> ${HOME}/.bashrc && \
     echo "export LC_ALL=zh_CN.UTF-8" >> ${HOME}/.bashrc 
 
+WORKDIR $APP_HOME
