@@ -7,7 +7,7 @@ RUN mkdir -p $APP_HOME && \
     # gem sources --add https://gems.ruby-china.org/ --remove https://rubygems.org/ && \
     #安装指定rails版本
     gem install rails --version "$RAILS_VERSION" && \
-    bundle config mirror.https://rubygems.org https://gems.ruby-china.org && \
+    # bundle config mirror.https://rubygems.org https://gems.ruby-china.org && \
     #修改时区
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
